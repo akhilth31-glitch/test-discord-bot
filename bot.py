@@ -4,7 +4,7 @@ from discord.ext import commands
 from dotenv import load_dotenv
 import asyncio
 
-
+from keep_alive import keep_alive
 
 load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
@@ -40,7 +40,7 @@ async def on_ready():
     print('Slash commands synced.')
 
 async def main():
-     # Start keepalive server
+    keep_alive()  # Start keepalive server
     await load_extensions()
     await bot.start(TOKEN)
 
