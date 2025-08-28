@@ -50,7 +50,14 @@ class LeaderboardView(discord.ui.View):
             tag = player.get("player_tag", "N/A")
             trophies = player.get("trophies", 0)
             offense_change = player.get("offense_trophies", 0)
-            offense_attacks = player.get("offense_attacks", 0)
+
+            # Get current and previous offense attacks for diff calculation
+            current_offense_attacks = player.get("offense_attacks", 0)
+            prev_offense_attacks = player.get("prev_offense_attacks", 0)
+            offense_attack_diff = current_offense_attacks - prev_offense_attacks
+            if offense_attack_diff < 0:
+                offense_attack_diff = current_offense_attacks  # fallback if reset
+
             defense_change = player.get("defense_trophies", 0)
             defense_defends = player.get("defense_defenses", 0)
 
@@ -65,7 +72,7 @@ class LeaderboardView(discord.ui.View):
             # Second line: trophies, offense, defense neatly aligned
             line2 = (
                 f"{trophy_emoji} {trophies} | "
-                f"{offense_emoji} `{offense_change:+}/{offense_attacks}` | "
+                f"{offense_emoji} `{offense_change:+}/{offense_attack_diff}` | "
                 f"{defense_emoji} `-{abs(defense_change)}/{defense_defends}`"
             )
 
@@ -158,4 +165,4 @@ class Leaderboard(commands.Cog):
 
 async def setup(bot):
     await bot.add_cog(Leaderboard(bot))
-        
+                    
