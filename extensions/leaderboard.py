@@ -52,7 +52,6 @@ class LeaderboardView(discord.ui.View):
             offense_change = player.get("offense_trophies", 0)
 
             current_offense_attacks = player.get("offense_attacks", 0)
-            # Display total daily offense attacks directly to avoid zero display issue
             offense_attack_diff = current_offense_attacks
 
             defense_change = player.get("defense_trophies", 0)
@@ -123,6 +122,38 @@ class LeaderboardView(discord.ui.View):
         embed = self.create_embed()
         await interaction.response.edit_message(embed=embed, view=self)
 
+    @discord.ui.button(label="Top Defenders", style=discord.ButtonStyle.secondary)
+    async def top_defenders_button(self, interaction: discord.Interaction, button: discord.ui.Button):
+        if not self.players:
+            await interaction.response.send_message("No player data available.", ephemeral=True)
+            return
+
+        # Sort by defense trophies (lowest = best defender)
+        defenders_sorted = sorted(self.players, key=lambda p: p.get("defense_trophies", 0))
+        top_defenders = defenders_sorted[:5]
+
+        description_lines = []
+        defense_emoji = EMOJIS.get("defense", "🛡️")
+        trophy_emoji = EMOJIS.get("trophy", "🏆")
+
+        for idx, player in enumerate(top_defenders, start=1):
+            name = to_bold_gg_sans(player.get("player_name", "Unknown"))
+            tag = player.get("player_tag", "N/A")
+            defense_change = player.get("defense_trophies", 0)
+            defense_defends = player.get("defense_defenses", 0)
+            trophies = player.get("trophies", 0)
+
+            line = f"{idx}. {name} ({tag})\n{defense_emoji} `{defense_change}/{defense_defends}` | {trophy_emoji} {trophies}\n"
+            description_lines.append(line)
+
+        embed = create_embed(
+            title=f"🛡 Top 5 Defenders",
+            description="\n".join(description_lines),
+            color=discord.Color.black()
+        )
+        await interaction.response.edit_message(embed=embed, view=self)
+
+
 class Leaderboard(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
@@ -157,5 +188,3 @@ class Leaderboard(commands.Cog):
 
 async def setup(bot):
     await bot.add_cog(Leaderboard(bot))
-    
-            
