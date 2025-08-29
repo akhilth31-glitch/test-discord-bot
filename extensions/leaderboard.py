@@ -132,7 +132,7 @@ class LeaderboardView(discord.ui.View):
 
         # Sort by defense trophies (lowest = best defender)
         defenders_sorted = sorted(self.players, key=lambda p: p.get("defense_trophies", 0))
-        top_defenders = defenders_sorted[:5]  # ✅ Fixed to show top 5
+        top_defenders = defenders_sorted[:1]  # ✅ Fixed to show top 5
 
         description_lines = []
         defense_emoji = EMOJIS.get("defense", "🛡️")
