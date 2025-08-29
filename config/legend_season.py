@@ -51,7 +51,7 @@ LEGEND_SEASONS_2025 = [
     {
         "season_number": 9,
         "start": datetime(2025, 8, 25, 5, 0, tzinfo=timezone.utc),
-        "end": datetime(2025, 9, 29, 4, 59, tzinfo=timezone.utc),
+        "end": datetime(2025, 10, 6, 4, 59, tzinfo=timezone.utc),
         "duration_days": 42
     },
     {
