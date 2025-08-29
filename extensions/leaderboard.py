@@ -124,13 +124,15 @@ class LeaderboardView(discord.ui.View):
 
     @discord.ui.button(label="Top Defenders", style=discord.ButtonStyle.secondary)
     async def top_defenders_button(self, interaction: discord.Interaction, button: discord.ui.Button):
+        await interaction.response.defer()  # ✅ Prevent "interaction failed"
+
         if not self.players:
-            await interaction.response.send_message("No player data available.", ephemeral=True)
+            await interaction.followup.send("No player data available.", ephemeral=True)
             return
 
         # Sort by defense trophies (lowest = best defender)
         defenders_sorted = sorted(self.players, key=lambda p: p.get("defense_trophies", 0))
-        top_defenders = defenders_sorted[:2]
+        top_defenders = defenders_sorted[:5]  # ✅ Fixed to show top 5
 
         description_lines = []
         defense_emoji = EMOJIS.get("defense", "🛡️")
@@ -151,7 +153,7 @@ class LeaderboardView(discord.ui.View):
             description="\n".join(description_lines),
             color=discord.Color.black()
         )
-        await interaction.response.edit_message(embed=embed, view=self)
+        await interaction.message.edit(embed=embed, view=self)  # ✅ Safe edit after defer()
 
 
 class Leaderboard(commands.Cog):
